@@ -15,7 +15,7 @@ public class Constants {
         return null;
     }
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
-        c.frontLeftName.set("fld");
+        c.frontLeftName.set("fld");//
         c.frontRightName.set("frd");
         c.backLeftName.set("bld");
         c.backRightName.set("brd");
