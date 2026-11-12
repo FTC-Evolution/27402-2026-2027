@@ -52,10 +52,20 @@ public class Teleop extends OpMode {
             // range 0-270 pour les degres trust
             Pose current = follower.pose();
             double turn = 270;
+            double yPos = 111;
+            double xPos = 85;
+            boolean red = true;
+
             if (current.y() < 72) {
                 turn = 90;
+                yPos = 31;
             }
-            follower.hold(current.withHeading(Math.toRadians(turn)));
+            if (red) {
+                xPos = 57;
+            }
+            Pose shooting = poseFactory.of(xPos,yPos,turn);
+            // follower.hold(current.withHeading(Math.toRadians(turn)));
+            follower.follow(Paths.line(follower.pose(),shooting).linear(follower.pose(),shooting));
         } else {
             DrivePowers p = ManualDrive.fieldCentric(
                     gamepad1.left_stick_x,
@@ -68,7 +78,8 @@ public class Teleop extends OpMode {
 
         telemetry.addData("x", follower.pose().x());
         telemetry.addData("y", follower.pose().y());
-        telemetry.addData("heading", follower.pose().heading());
+        telemetry.addData("heading (r)", follower.pose().heading());
+        telemetry.addData("heading (d)", Math.toDegrees(follower.pose().heading()));
 
         if (follower.currentPath() != null) {
             telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
