@@ -13,9 +13,11 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.interfaces.Brain;
+import org.firstinspires.ftc.teamcode.interfaces.Shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @TeleOp(name="Teleop")
@@ -23,6 +25,7 @@ public class Teleop extends OpMode {
     private Follower follower;
 
     private Brain Brain;
+    private Shooter shooter;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
     private final Pose start = poseFactory.of(8,8,90);
@@ -36,6 +39,7 @@ public class Teleop extends OpMode {
         follower.setPose(start);
         follower.update();
 
+        shooter = new Shooter(hardwareMap.get(DcMotorEx.class, "shooter"));
         Brain = new Brain(hardwareMap.get(IMU.class, "imu"));
     }
 
@@ -43,8 +47,28 @@ public class Teleop extends OpMode {
     public void loop() {
         follower.update();
         Scheduler.execute();
-        if (gamepad1.x) {
+        if (gamepad1.share) {
             Brain.resetYaw();
+        }
+
+        // Shooter
+        if (gamepad2.triangleWasPressed()) {
+            schedule(shooter.shoot);
+        }
+        if (gamepad2.triangleWasReleased()) {
+            schedule(shooter.stop);
+        }
+        if (gamepad2.dpadUpWasPressed()) {
+            shooter.velocity += Shooter.SHOOTER_TICKS_PER_REV;
+        }
+        if (gamepad2.dpadDownWasPressed()) {
+            shooter.velocity -= Shooter.SHOOTER_TICKS_PER_REV;
+        }
+        if (gamepad2.dpadRightWasPressed()) {
+            shooter.velocity += Shooter.SHOOTER_TICKS_PER_REV*5;
+        }
+        if (gamepad2.dpadLeftWasPressed()) {
+            shooter.velocity -= Shooter.SHOOTER_TICKS_PER_REV*5;
         }
 
         if (gamepad1.circle) {
@@ -78,8 +102,13 @@ public class Teleop extends OpMode {
 
         telemetry.addData("x", follower.pose().x());
         telemetry.addData("y", follower.pose().y());
-        telemetry.addData("heading (r)", follower.pose().heading());
         telemetry.addData("heading (d)", Math.toDegrees(follower.pose().heading()));
+        telemetry.addLine();
+        telemetry.addData("target speed (rps)",shooter.getTargetSpeed());
+        telemetry.addData("target speed (rpm)",shooter.getTargetSpeed()*60);
+        telemetry.addData("target velocity",shooter.getTargetVelocity());
+        telemetry.addData("current speed",shooter.getCurrentSpeed());
+        telemetry.addData("current velocity", shooter.getCurrentVelocity());
 
         if (follower.currentPath() != null) {
             telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
