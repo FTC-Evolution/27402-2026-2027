@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.interfaces;
 
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Shooter {
     // protected DcMotorEx nectarMotor;
@@ -15,6 +16,7 @@ public class Shooter {
     public Shooter(/*DcMotorEx nectarMotor,*/ DcMotorEx pollenMotor) {
          // this.nectarMotor = nectarMotor;
          this.pollenMotor = pollenMotor;
+         this.pollenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setSpeed(double revolutionsPerSecond) {
