@@ -1,22 +1,32 @@
 package org.firstinspires.ftc.teamcode.interfaces;
 
+import com.pedropathing.controllers.Controller;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Shooter {
     // protected DcMotorEx nectarMotor;
     protected DcMotorEx pollenMotor;
+    protected _Stopper stopper;
 
     public static final double     SHOOTER_TICKS_PER_REV  = 28;
 
     static final double BASE_REV_PER_SECOND = 70;
     public double velocity = BASE_REV_PER_SECOND*SHOOTER_TICKS_PER_REV;
 
-    public Shooter(/*DcMotorEx nectarMotor,*/ DcMotorEx pollenMotor) {
+    // Controller pidController = Controller.pid(1,2,3);
+    // try this out later!
+
+    public Shooter(/*DcMotorEx nectarMotor,*/ DcMotorEx pollenMotor, Servo stopperServo) {
          // this.nectarMotor = nectarMotor;
          this.pollenMotor = pollenMotor;
          this.pollenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+         // TODO: test pid
+         // this.pollenMotor.setPIDFCoefficients(tung,sahur,tralalero);
+         this.stopper = new _Stopper(stopperServo);
     }
 
     public void setSpeed(double revolutionsPerSecond) {
@@ -63,9 +73,6 @@ public class Shooter {
                 })
                 .setDone(() -> {
                     return true;
-                })
-                .setEnd(endCondition -> {
-
                 });
 
 }

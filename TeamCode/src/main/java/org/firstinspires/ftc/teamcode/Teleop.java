@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.interfaces.Brain;
 import org.firstinspires.ftc.teamcode.interfaces.Shooter;
@@ -39,7 +40,7 @@ public class Teleop extends OpMode {
         follower.setPose(start);
         follower.update();
 
-        shooter = new Shooter(hardwareMap.get(DcMotorEx.class, "shooter"));
+        shooter = new Shooter(hardwareMap.get(DcMotorEx.class, "shooter"),hardwareMap.get(Servo.class,"stopper"));
         Brain = new Brain(hardwareMap.get(IMU.class, "imu"));
     }
 
@@ -115,6 +116,6 @@ public class Teleop extends OpMode {
             telemetry.addData("Path number", follower.pathIndex());
         }
 
-        // telemetry.update();
+        telemetry.update();
     }
 }
