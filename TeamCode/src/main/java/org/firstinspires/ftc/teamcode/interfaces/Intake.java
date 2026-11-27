@@ -18,7 +18,7 @@ public class Intake {
         // this.flowerKiller = flowerKiller;
     }
 
-    Command runWithTransfer = Command.build()
+    public Command runWithTransfer = Command.build()
             .setStart(() -> {
                 intakeMotor.setPower(1);
                 sequential(transferUnit.run);
@@ -29,8 +29,13 @@ public class Intake {
             .setDone(() -> {
                 return true;
             })
-            .setEnd(endCondition -> {
-                intakeMotor.setPower(0);
-            })
             .requiring(intakeMotor);
+    public Command stopAll = Command.build()
+            .setStart(() -> {
+                intakeMotor.setPower(0);
+                sequential(transferUnit.stop);
+            })
+            .setDone(() -> {
+                return transferUnit.stop.done() && intakeMotor.getPower() < 0.025;
+            });
 }

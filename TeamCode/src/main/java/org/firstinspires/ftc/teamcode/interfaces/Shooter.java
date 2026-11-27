@@ -45,6 +45,10 @@ public class Shooter {
         pollenMotor.setVelocity(v);
     }
 
+    public boolean ready() {
+        return getCurrentVelocity() < (getTargetVelocity() + 28) && getCurrentVelocity() > (getTargetVelocity() - 28);
+    }
+
     public double getCurrentVelocity() {
         return pollenMotor.getVelocity();
     }

@@ -22,4 +22,11 @@ public class _TransferUnit {
             .setEnd(endCondition -> {
 
             });
+    Command stop = Command.build()
+            .setStart(() -> {
+                this.transferUnitMotor.setPower(0);
+            })
+            .setDone(() -> {
+               return (transferUnitMotor.getPower() < 0.025);
+            });
 }

@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.interfaces.Brain;
+import org.firstinspires.ftc.teamcode.interfaces.Intake;
 import org.firstinspires.ftc.teamcode.interfaces.Shooter;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
@@ -27,6 +28,7 @@ public class Teleop extends OpMode {
 
     private Brain Brain;
     private Shooter shooter;
+    private Intake intake;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
     private final Pose start = poseFactory.of(8,8,90);
@@ -72,6 +74,13 @@ public class Teleop extends OpMode {
             shooter.velocity -= Shooter.SHOOTER_TICKS_PER_REV*5;
         }
 
+        if (gamepad2.squareWasPressed()) {
+            schedule(intake.runWithTransfer);
+        }
+        if (gamepad2.squareWasReleased()) {
+            schedule(intake.stopAll);
+        }
+
         if (gamepad1.circle) {
 
             // range 0-270 pour les degres trust
@@ -105,6 +114,12 @@ public class Teleop extends OpMode {
         telemetry.addData("y", follower.pose().y());
         telemetry.addData("heading (d)", Math.toDegrees(follower.pose().heading()));
         telemetry.addLine();
+        if (shooter.ready()) {
+            telemetry.addLine("shooter running at full speed");
+        }
+        if (intake.runWithTransfer.isScheduled()) {
+            telemetry.addLine("intake running");
+        }
         telemetry.addData("target speed (rps)",shooter.getTargetSpeed());
         telemetry.addData("target speed (rpm)",shooter.getTargetSpeed()*60);
         telemetry.addData("target velocity",shooter.getTargetVelocity());
